@@ -1,10 +1,25 @@
 const quoteContainer = document.getElementById("quote-container");
 const newQuote = document.getElementById("new-quote");
-const quote = document.getElementById("quote");
-const author = document.getElementById("author");
+const quoteText = document.getElementById("quote");
+const authorText = document.getElementById("author");
 const twitterBtn = document.getElementById("twitter");
+const loader = document.getElementById("loader");
+
+// show loading
+function loading() {
+  loader.hidden = false;
+  quoteContainer.hidden = true;
+}
+// hide loading
+function complete() {
+  if (!loader.hidden) {
+    quoteContainer.hidden = false;
+    loader.hidden;
+  }
+}
 
 // get quotes from API
+loading();
 async function getQuote() {
   // get a proxy for API
   const proxyUrl = "https://cors-anywhere.herokuapp.com/";
@@ -13,21 +28,16 @@ async function getQuote() {
   try {
     const response = await fetch(proxyUrl + apiUrl);
     const data = await response.json();
+    authorText.innerText = data.quoteAuthor;
+    quoteText.innerText = data.quoteText;
+    // stop loader,show quote
+    complete();
   } catch (error) {
     getQuote();
   }
 }
-// calling function
-getQuote();
 
-newQuote.addEventListener("click", displayQuote);
-
-function displayQuote() {
-  let number = Math.floor(Math.random() * quotes.length);
-  quote.innerHTML = quotes[number].quote;
-  author.innerHTML = quotes[number].name;
-}
-// tweeter button
+// twitter button
 
 function tweetQuote() {
   const quote = quoteText.innerText;
@@ -35,4 +45,9 @@ function tweetQuote() {
   const twitterUrl = `https://twitter.com/intent/tweet?text=${quote} - ${author}`;
   window.open(twitterUrl, "_blank");
 }
+
+newQuote.addEventListener("click", getQuote);
 twitterBtn.addEventListener("click", tweetQuote);
+
+// calling function
+getQuote();
