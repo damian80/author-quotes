@@ -1,37 +1,38 @@
-const quotes = [{
-        name: 'Derek Jeter',
-        quote: 'There may be people that have more talent than you, but there’s no excuse for anyone to work harder than you do'
-    },
-    {
-        name: 'Evander Holyfield',
-        quote: 'It is not the size of a man but the size of his heart that matters.'
-    },
-    {
-        name: 'Tim Notke',
-        quote: 'Hard work beats talent when talent doesn’t work hard.'
-    },
-    {
-        name: 'Michael Jordan',
-        quote: 'Never say never because limits, like fears, are often just an illusion.'
-    },
-    {
-        name: 'Dean Karnazes',
-        quote: 'Run when you can, walk if you have to, crawl if you must; just never give up.'
-    }
+const quoteContainer = document.getElementById("quote-container");
+const newQuote = document.getElementById("new-quote");
+const quote = document.getElementById("quote");
+const author = document.getElementById("author");
+const twitterBtn = document.getElementById("twitter");
 
-]
-
-// targeting a button author and quote
-const quoteBtn = document.querySelector('#new-quote');
-const quoteAuthor = document.querySelector('#author');
-const quote = document.querySelector('#quote');
-
-quoteBtn.addEventListener('click', displayQoute);
-
-function displayQoute() {
-    let number = Math.floor(Math.random() * quotes.length);
-    quoteAuthor.innerHTML = quotes[number].name;
-    quote.innerHTML = quotes[number].quote;
-
-
+// get quotes from API
+async function getQuote() {
+  // get a proxy for API
+  const proxyUrl = "https://cors-anywhere.herokuapp.com/";
+  const apiUrl =
+    "http://api.forismatic.com/api/1.0/?method=getQuote&lang=en&format=json";
+  try {
+    const response = await fetch(proxyUrl + apiUrl);
+    const data = await response.json();
+  } catch (error) {
+    getQuote();
+  }
 }
+// calling function
+getQuote();
+
+newQuote.addEventListener("click", displayQuote);
+
+function displayQuote() {
+  let number = Math.floor(Math.random() * quotes.length);
+  quote.innerHTML = quotes[number].quote;
+  author.innerHTML = quotes[number].name;
+}
+// tweeter button
+
+function tweetQuote() {
+  const quote = quoteText.innerText;
+  const author = authorText.innerText;
+  const twitterUrl = `https://twitter.com/intent/tweet?text=${quote} - ${author}`;
+  window.open(twitterUrl, "_blank");
+}
+twitterBtn.addEventListener("click", tweetQuote);
